@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Playlist Maker</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  </head>
+  <body>
+
+    <div class="artists">
+
+    </div>
+    <div class="tracks">
+
+    </div>
+
+    <div class="trier">
+
+    </div>
+  </body>
+</html>
+
+<style media="screen" type="text/css">
+  body {
+    display : flex;
+    flex-wrap: wrap;
+  }
+
+  div {
+    display : flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding : 5px;
+    align-items: center;
+  }
+
+  .artists {
+    display : none;
+    width: 50%;
+  }
+
+  .tracks {
+    width:50%;
+    display: none;
+  }
+
+  .trier {
+    display : flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 10px solid red;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+
+  let token = $(location).attr("search").split('=')[1];
+
+  $.ajax({
+    url: 'https://api.spotify.com/v1/playlists/3j9945Oii2nKaRnOAqdxV2/tracks?fields=total',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    dataType : 'json',
+    success : function(data, statut) {
+      // console.log(data.total)
+      let nb100 = Math.trunc(data.total/100)+1;
+
+      // console.log(nb100);
+      let offset = 0;
+      for (var k = 0; k < nb100; k++) {
+        offset = k*100;
+        // console.log(offset);
+        $.ajax({
+          url: 'https://api.spotify.com/v1/playlists/3j9945Oii2nKaRnOAqdxV2/tracks?fields=items(track(artists,uri,name))&offset='+offset,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          dataType : 'json',
+          success : function(data, statut) {
+            // console.log(data);
+            // console.log(data.items.length);
+            for (var i = 0; i < data.items.length; i++) {
+              $('.tracks').append('<p class="track">'+data.items[i].track.name+' -> '+data.items[i].track.uri+'</p>')
+
+              for (var j = 0; j < data.items[i].track.artists.length; j++) {
+                // $('.artists').append('<p class="artist">'+data.items[i].track.artists[j].name+' -> '+data.items[i].track.artists[j].href+'</p>')
+                $('.artists').append('<p class="artist">'+data.items[i].track.artists[j].id+'/-/'+data.items[i].track.uri+'</p>')
+
+              }
+            }
+          },
+          error : function(resultat, statut, err) {
+            console.log(err)
+          }
+        });
+      }
+
+      setTimeout(function () {
+        // console.log($('.artist').length);
+        let artistes = [];
+        let arttrack = [];
+        // artiste.push('aaa')
+        // artiste.push('bbb')
+        //
+        // console.log(artiste);
+        $('.artist').each((i, item) => {
+          arttrack.push($(item).text());
+          // console.log($(item).text());
+          res = $.inArray( $(item).text().split('/-/')[0], artistes);
+          // console.log(res);
+          if (res == -1)
+            artistes.push($(item).text().split('/-/')[0]);
+        });
+        // console.log(artistes.length);
+
+        let genres = [];
+        let nb50 = Math.trunc(artistes.length/50)+1;
+        let ids = '';
+        // console.log(nb100);
+        offset = 0;
+        for (var a = 0; a < nb50; a++) {
+          offset = a*50;
+          ids = '';
+
+          for (var b = 0; b < 50; b++) {
+            if (artistes[b+offset]) {
+              ids = ids+artistes[b+offset];
+              if (b != 49 && artistes[b+offset+1] )
+                ids = ids+',';
+            }
+          }
+          // console.log(ids);
+
+          $.ajax({
+            url: 'https://api.spotify.com/v1/artists?ids='+ids,
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            dataType : 'json',
+            success : function(data, statut) {
+              for (var i = 0; i < data.artists.length; i++) {
+                for (var j = 0; j < data.artists[i].genres.length; j++) {
+                  genres.push(data.artists[i].name+'/-/'+data.artists[i].id+'/-/'+data.artists[i].genres[j])
+                  let nb = 0;
+
+                  for (var iterator = 0; iterator < arttrack.length; iterator++) {
+                    if (arttrack[iterator].split('/-/')[0] == data.artists[i].id) {
+                      nb++;
+                      if (nb==1) {
+                        genres[genres.length-1] = genres[genres.length-1]+'/-/'+arttrack[iterator].split('/-/')[1];
+                      } else {
+                        genres[genres.length] = genres[genres.length-1].split('/-/')[0]+'/-/'+genres[genres.length-1].split('/-/')[1]+'/-/'+genres[genres.length-1].split('/-/')[2]+'/-/'+arttrack[iterator].split('/-/')[1];
+                      }
+                    }
+                  }
+
+                }
+              }
+              // console.log(data);
+
+            },
+            error : function(resultat, statut, err) {
+              console.log(err)
+            }
+          });
+        }
+
+        setTimeout(function() {
+          // console.log(genres);
+
+          genres.forEach((item, i) => {
+            if ($('body').find('div[value="'+item.split('/-/')[2]+'"]').length != 0) {
+              div = $('body').find('div[value="'+item.split('/-/')[2]+'"]');
+              // console.log(div);
+              div.append('<p>'+item.split('/-/')[0]+'/-/'+item.split('/-/')[3]+'</p>');
+            } else {
+              $('body').prepend('<div class="genres" value="'+item.split('/-/')[2]+'"><h3>'+item.split('/-/')[2]+'</h3><p>'+item.split('/-/')[0]+'/-/'+item.split('/-/')[3]+'</p></div>')
+            }
+            // console.log(item.split('/-/')[1])
+            // console.log(item.split('/-/')[2])
+            // console.log(item);
+            // console.log(i);
+          });
+          let tri = [];
+          let value = [];
+          // console.log($('.genres').length);
+          $('.genres').each((i, item) => {
+            count = 0;
+            while (tri[count] < $(item).children().length-1 && count != tri.length) {
+              count++;
+            }
+            for (var i = tri.length; i > count; i--) {
+              value[i] = value[i-1];
+              tri[i] = tri[i-1];
+            }
+            tri[count] = $(item).children().length-1;
+            value[count] = $(item).attr("value");
+            // console.log($(item).children().length-1);
+          })
+          console.log(tri);
+          console.log(value);
+
+          value.forEach((item, i) => {
+            div = $('body').find('.genres[value="'+item+'"]');
+            $('.trier').prepend(div);
+          });
+
+          console.log(genres);
+
+
+
+          //////////////////////////C'est plus dynamique à partir d'ici //////////////////////////
+          // let frenchhiphop = [];
+          // genres.forEach((item, i) => {
+          //   if (item.split('/-/')[2] == 'french hip hop')
+          //     frenchhiphop.push(item.split('/-/')[3]);
+          // });
+          //
+          // console.log(frenchhiphop);
+          // for (var a = 0; a < 3; a++) {
+          //   offset = a*100;
+          //   uris = '';
+          //
+          //   for (var b = 0; b < 100; b++) {
+          //     if (frenchhiphop[b+offset]) {
+          //       uris = uris+frenchhiphop[b+offset];
+          //       if (b != 99 && frenchhiphop[b+offset+1] )
+          //         uris = uris+',';
+          //     }
+          //   }
+          //   console.log(uris);
+          //   $.ajax({
+          //     url: 'https://api.spotify.com/v1/playlists/1fudAIFzRvOazixnVNv1Ut/tracks?uris='+uris,
+          //     headers: {
+          //       'Accept': 'application/json',
+          //       'Content-Type': 'application/json',
+          //       'Authorization': 'Bearer ' + token
+          //     },
+          //     type: 'POST',
+          //     dataType : 'json',
+          //     success : function(data, statut) {
+          //       console.log(data);
+          //       console.log(statut);
+          //
+          //     },
+          //     error : function(resultat, statut, err) {
+          //       console.log(err)
+          //     }
+          //   });
+          // }
+
+          // let frenchhiphop = [];
+          // genres.forEach((item, i) => {
+          //   if (item.split('/-/')[2] == 'new french touch')
+          //     frenchhiphop.push(item.split('/-/')[3]);
+          // });
+          //
+          // console.log(frenchhiphop);
+          // for (var a = 0; a < 3; a++) {
+          //   offset = a*100;
+          //   uris = '';
+          //
+          //   for (var b = 0; b < 100; b++) {
+          //     if (frenchhiphop[b+offset]) {
+          //       uris = uris+frenchhiphop[b+offset];
+          //       if (b != 99 && frenchhiphop[b+offset+1] )
+          //         uris = uris+',';
+          //     }
+          //   }+
+          //   console.log(uris);
+          //   $.ajax({
+          //     url: 'https://api.spotify.com/v1/playlists/0rhbw3AmFNzVZ611BvG9mj/tracks?uris='+uris,
+          //     headers: {
+          //       'Accept': 'application/json',
+          //       'Content-Type': 'application/json',
+          //       'Authorization': 'Bearer ' + token
+          //     },
+          //     type: 'POST',
+          //     dataType : 'json',
+          //     success : function(data, statut) {
+          //       console.log(data);
+          //       console.log(statut);
+          //
+          //     },
+          //     error : function(resultat, statut, err) {
+          //       console.log(err)
+          //     }
+          //   });
+          // }
+
+
+        }, 2000)
+
+
+      }, 5000);
+
+    },
+    error : function(resultat, statut, err) {
+      console.log(err)
+    }
+  });
+
+</script>
