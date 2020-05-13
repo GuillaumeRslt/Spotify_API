@@ -28,9 +28,15 @@
         <div id="oauth">
         </div>
         <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-
+        <br>
+        <a href="genres/index.html?token={{access_token}}"><button class="btn btn-default">Genres - artiste</button></a>
+        <br>
+        <a href="genresAlbum/index.html?token={{access_token}}"><button class="btn btn-default">Genres - album</button></a>
+        <br>
+        <a href="Queue/index.html?token={{access_token}}"><button class="btn btn-default">Queue</button></a>
       </div>
     </div>
+
 
     <script id="user-profile-template" type="text/x-handlebars-template">
       <h1>Logged in as {{display_name}}</h1>
@@ -58,7 +64,6 @@
         <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
         <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
       </dl>
-      file:///C:/Users/guill/Documents/Spotify_API/Playlist_Maker/index.html?token={{access_token}}
     </script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
@@ -136,6 +141,15 @@
               });
             });
           }, false);
+
+          $('#loggedin a').each((i, item) => {
+            href = $(item).attr('href').split('=')[0];
+            console.log(href);
+            $(item).attr('href', href+'='+params.access_token);
+            console.log(params.access_token);
+          });
+
+
         }
       })();
     </script>
