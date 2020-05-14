@@ -27,7 +27,7 @@ Lancer l'appilcation
 - [x] Optimiser le lancement
 - [x] Ajouter l'affichage d'erreur
 - [x] Lancer à partir des titres likés
-- [ ] Lister les genres
+- [x] Lister les genres
 - [ ] Proposer un meilleur affichage
 - [ ] Proposer de créer ou de modifier une playlist existante
 - [ ] ...

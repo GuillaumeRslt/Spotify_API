@@ -11,6 +11,12 @@
 
     </div>
 
+    <div class="select">
+      <select class="selectGenres" name="selectGenres">
+
+      </select>
+    </div>
+
     <div class="artists">
 
     </div>
@@ -27,15 +33,7 @@
 <style media="screen" type="text/css">
   body {
     display : flex;
-    flex-wrap: wrap;
-  }
-
-  div {
-    display : flex;
     flex-direction: column;
-    border: 1px solid black;
-    padding : 5px;
-    align-items: center;
   }
 
   p {
@@ -65,8 +63,20 @@
     border: unset;
   }
 
+  .trier div {
+    display : flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding : 5px;
+    align-items: center;
+  }
+
   .red {
     color: red;
+  }
+
+  .select {
+    display: none;
   }
 </style>
 
@@ -208,9 +218,13 @@
     value.forEach((item, i) => {
       div = $('body').find('.genres[value="'+item+'"]');
       $('.trier').prepend(div);
+
+      $('.selectGenres').prepend('<option value="'+item+'">'+item);
     });
+    $('.selectGenres').prepend('<option hidden selected>Séletionner un genre');
 
     $('.info').empty();
+    $('.select').show();
 
     console.log(genres);
   } /////////////////// quatre //////////////////////
