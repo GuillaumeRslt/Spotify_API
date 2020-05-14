@@ -348,7 +348,7 @@
   $('.info').empty().append('<p>Récupération des musiques... 1/2</p>');
 
   $.ajax({
-    url: 'https://api.spotify.com/v1/playlists/3j9945Oii2nKaRnOAqdxV2/tracks?fields=total',
+    url: 'https://api.spotify.com/v1/me/tracks?limit=1',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -360,18 +360,18 @@
       let total = data.total;
       let fin = 0;
       // console.log(data.total)
-      let nb100 = Math.trunc(data.total/100)+1;
+      let nb50 = Math.trunc(data.total/50)+1;
 
 
 
       // console.log(nb100);
       let offset = 0;
       $('.info').empty().append('<p>Récupération des musiques... 2/2</p>');
-      for (var k = 0; k < nb100; k++) {
-        offset = k*100;
+      for (var k = 0; k < nb50; k++) {
+        offset = k*50;
         // console.log(offset);
         $.ajax({
-          url: 'https://api.spotify.com/v1/playlists/3j9945Oii2nKaRnOAqdxV2/tracks?fields=items(track(artists,uri,name))&offset='+offset,
+          url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset='+offset,
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -380,6 +380,7 @@
           dataType : 'json',
           success : function(data, statut) {
             // console.log(data);
+
             // console.log(data.items.length);
             for (var i = 0; i < data.items.length; i++) {
               fin++;
