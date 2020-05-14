@@ -38,6 +38,10 @@
     align-items: center;
   }
 
+  p {
+    margin: unset;
+  }
+
   .info {
     display : block;
     border: unset;
@@ -60,13 +64,16 @@
     flex-wrap: wrap;
     border: unset;
   }
+
+  .red {
+    color: red;
+  }
 </style>
 
 <script type="text/javascript" charset="utf-8">
   let genres = [];
 
   function un() {
-    $('.info').append('<p>Récupération des artistes... </p>');
     // console.log($('.artist').length);
     let artistes = [];
     let arttrack = [];
@@ -89,7 +96,7 @@
     // console.log(nb100);
     offset = 0;
 
-    $('.info').append('<p>Récupération des genres... </p>');
+    $('.info').empty().append('<p>Récupération des genres... </p>');
     for (var a = 0; a < nb50; a++) {
       offset = a*50;
       ids = '';
@@ -134,12 +141,15 @@
           // console.log(data);
           if (total == fin) {
             console.log('deux');
+            $('.info').empty().append('<p>Tri des genres... 1/2</p>');
+
             deux();
           }
 
         },
         error : function(resultat, statut, err) {
           console.log(err)
+          $('.info').append('<p class="red">Echec lors de la récupération des genres... </p>');
         }
       });
     }
@@ -148,8 +158,6 @@
 
   function deux() {
     // console.log(genres);
-
-    $('.info').append('<p>Tri des genres... </p>');
 
     genres.forEach((item, i) => {
       if ($('body').find('div[value="'+item.split('/-/')[2]+'"]').length != 0) {
@@ -164,6 +172,13 @@
       // console.log(item);
       // console.log(i);
     });
+    $('.info').empty().append('<p>Tri des genres... 2/2</p>');
+
+    console.log('trois');
+    trois()
+  } //////////////// deux ///////////////////////
+
+  function trois() {
     let tri = [];
     let value = [];
     // console.log($('.genres').length);
@@ -182,7 +197,14 @@
     })
     console.log(tri);
     console.log(value);
-    $('.info').append('<p>Affichage... </p>');
+
+    $('.info').empty().append('<p>Affichage... </p>');
+
+    console.log('quatre');
+    quatre(value);
+  } //////////////////// trois //////////////////////////
+
+  function quatre(value) {
     value.forEach((item, i) => {
       div = $('body').find('.genres[value="'+item+'"]');
       $('.trier').prepend(div);
@@ -191,9 +213,11 @@
     $('.info').empty();
 
     console.log(genres);
+  } /////////////////// quatre //////////////////////
 
 
 
+  function cinq() {
     //////////////////////////C'est plus dynamique à partir d'ici //////////////////////////
 
     /////////////////////////french hip hop/////////////////////////////
@@ -317,11 +341,11 @@
     //     }
     //   });
     // }
-  } /////////////////// deux ///////////////////////////
+  } /////////////////// cinq ///////////////////////////
 
   let token = $(location).attr("search").split('=')[1];
 
-  $('.info').append('<p>Récupération des musics... 1/2</p>');
+  $('.info').empty().append('<p>Récupération des musiques... 1/2</p>');
 
   $.ajax({
     url: 'https://api.spotify.com/v1/playlists/3j9945Oii2nKaRnOAqdxV2/tracks?fields=total',
@@ -342,7 +366,7 @@
 
       // console.log(nb100);
       let offset = 0;
-      $('.info').append('<p>Récupération des musics... 2/2</p>');
+      $('.info').empty().append('<p>Récupération des musiques... 2/2</p>');
       for (var k = 0; k < nb100; k++) {
         offset = k*100;
         // console.log(offset);
@@ -369,12 +393,14 @@
             }
 
             if (total == fin) {
+              $('.info').empty().append('<p>Récupération des artistes... </p>');
               console.log('un');
               un();
             }
           },
           error : function(resultat, statut, err) {
             console.log(err)
+            $('.info').empty().append('<p class="red">Echec lors de la récupération des musiques... </p>');
           }
         });
       }
@@ -384,6 +410,7 @@
     },
     error : function(resultat, statut, err) {
       console.log(err)
+      $('.info').empty().append('<p class="red">Echec lors de la récupération du nombre total de musiques...</p>');
     }
   });
 

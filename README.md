@@ -25,7 +25,7 @@ Lancer l'appilcation
 
 ### Créateur de playlists
 - [x] Optimiser le lancement
-- [ ] Ajouter l'affichage d'erreur
+- [x] Ajouter l'affichage d'erreur
 - [ ] Lancer à partir des titres likés
 - [ ] Lister les genres
 - [ ] Proposer un meilleur affichage
