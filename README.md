@@ -2,13 +2,13 @@
 # Spotify_API
 Test de l'api de Spotify à partir du répertoire : https://github.com/spotify/web-api-auth-examples
 
-Pour l'instant n'essayez pas de le faire fonctionner... C'est en plein développement.
+Pour l'instant n'essayez pas de la faire fonctionner... C'est en plein développement.
 
 ## Utiliser l'application :
 
 `cd Spotify_API`
 
-Installer les dépendance
+Installer les dépendances
 
 `npm install`
 
