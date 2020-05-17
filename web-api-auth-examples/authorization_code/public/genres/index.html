@@ -11,6 +11,10 @@
 
     </div>
 
+    <div class="scrolltop">
+      <button name="button">TOP</button>
+    </div>
+
     <div class="select">
       <select class="selectGenres" name="selectGenres">
 
@@ -77,6 +81,13 @@
 
   .select {
     display: none;
+  }
+
+  .scrolltop {
+    position: fixed;
+    top: 5px;
+    left : 90%;
+    z-index:1;
   }
 </style>
 
@@ -428,5 +439,20 @@
       $('.info').empty().append('<p class="red">Echec lors de la récupération du nombre total de musiques...</p>');
     }
   });
+
+
+
+  $('.selectGenres').on("change", function() {
+    console.log(this);
+    optionValue = $(this).val();
+    console.log(optionValue);
+    scroll = $('.trier').find('div[value="'+optionValue+'"]').offset().top;
+    console.log(scroll);
+    $('html').animate({"scrollTop":scroll}, 500);
+  })
+
+  $('.scrolltop').on('click', function() {
+    $('html').animate({"scrollTop":0}, 500);
+  })
 
 </script>
