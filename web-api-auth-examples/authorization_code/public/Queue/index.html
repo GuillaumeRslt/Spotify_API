@@ -6,7 +6,7 @@
 	  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   </head>
   <body>
-    <h1>marche pô... pour linstant ;)</h1>
+    <h1>Si un appareil utilise spotify vous devez avoir une nouvelle musique en fil d'attente ;)</h1>
 
   </body>
 </html>
@@ -18,7 +18,7 @@
   uri='spotify:track:3fTKidZK8tKdO5AFVXura0'
 
   $.ajax({
-    url: 'https://api.spotify.com/v1/me/player/queue?'+uri,
+    url: 'https://api.spotify.com/v1/me/player/queue?uri='+uri,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
